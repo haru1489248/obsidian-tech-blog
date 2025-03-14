@@ -3,7 +3,7 @@ name: Publish Articles to Qiita
 on:
   push:
     paths:
-      - "Zenn&Qiita/publish/*.md"  # フォルダ構成に合わせる
+      - "Zenn*/publish/*.md"  # フォルダ構成に合わせる
 
 jobs:
   publish_to_qiita:
