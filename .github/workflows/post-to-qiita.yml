@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - "Zenn*/publish/*.md"  # Obsidianのpublishフォルダ内の.mdファイルが対象
+      
+permissions: 
+  contents: write  # これを追加することで GitHub Actions から push 可能に
 
 jobs:
   publish_to_qiita:
