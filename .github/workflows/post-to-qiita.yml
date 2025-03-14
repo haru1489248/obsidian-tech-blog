@@ -3,7 +3,7 @@ name: Publish Articles to Qiita
 on:
   push:
     paths:
-      - "public/*.md" # Obsidianの「public」フォルダ内の.mdファイルが対象
+      - "publish/*.md" # Obsidianの「public」フォルダ内の.mdファイルが対象
 
 jobs:
   publish_to_qiita:
