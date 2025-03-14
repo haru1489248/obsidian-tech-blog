@@ -22,9 +22,24 @@ jobs:
               TITLE=$(grep "^title: " "$file" | cut -d'"' -f2) # titleを取得
               BODY=$(tail -n +5 "$file") # メタデータを除いた本文
               ARTICLE_ID=$(grep "^qiita_id: " "$file" | cut -d' ' -f2) # 記事IDを取得
-              
+
+              echo "処理中の記事: $file"
+              echo "記事ID: $ARTICLE_ID"
+
               JSON_PAYLOAD=$(jq -n --arg title "$TITLE" --arg body "$BODY" \
                 '{title: $title, body: $body, tags: [{name: "技術"}], private: false}')
+
+              if [ ! -z "$ARTICLE_ID" ]; then
+                # 記事 ID がある場合は GET で存在確認
+                CHECK_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+                  -H "Authorization: Bearer ${{ secrets.QIITA_TOKEN }}" \
+                  "https://qiita.com/api/v2/items/$ARTICLE_ID")
+
+                if [ "$CHECK_RESPONSE" -ne 200 ]; then
+                  echo "記事ID $ARTICLE_ID が見つからないため、新規投稿に切り替えます"
+                  ARTICLE_ID=""
+                fi
+              fi
 
               if [ -z "$ARTICLE_ID" ]; then
                 # 記事 ID がない場合は新規投稿
@@ -42,10 +57,12 @@ jobs:
                 fi
               else
                 # 記事 ID がある場合は更新
-                curl -X PUT "https://qiita.com/api/v2/items/$ARTICLE_ID" \
+                UPDATE_RESPONSE=$(curl -s -X PUT "https://qiita.com/api/v2/items/$ARTICLE_ID" \
                   -H "Authorization: Bearer ${{ secrets.QIITA_TOKEN }}" \
                   -H "Content-Type: application/json" \
-                  -d "$JSON_PAYLOAD"
+                  -d "$JSON_PAYLOAD")
+
+                echo "記事ID $ARTICLE_ID の更新結果: $UPDATE_RESPONSE"
               fi
             fi
           done
