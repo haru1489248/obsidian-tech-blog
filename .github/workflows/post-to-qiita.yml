@@ -3,7 +3,7 @@ name: Publish Articles to Qiita
 on:
   push:
     paths:
-      - "Zenn*/publish/*.md"  # フォルダ構成に合わせる
+      - "ZennQiita/publish/*.md"  # フォルダ構成に合わせる
 
 jobs:
   publish_to_qiita:
@@ -12,15 +12,21 @@ jobs:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
 
+      - name: 必要なツールをインストール (jq)
+        run: sudo apt-get install -y jq
+
       - name: Qiitaに投稿
         run: |
           for file in "Zenn&Qiita/publish/"*.md; do
             if grep -q "publish: true" "$file"; then  # publish: true のものだけ投稿
               TITLE=$(grep "^title: " "$file" | cut -d'"' -f2) # titleを取得
               BODY=$(tail -n +5 "$file") # メタデータを除いた本文
+              JSON_PAYLOAD=$(jq -n --arg title "$TITLE" --arg body "$BODY" \
+                '{title: $title, body: $body, tags: [{name: "技術"}], private: false}')
+
               curl -X POST "https://qiita.com/api/v2/items" \
                 -H "Authorization: Bearer ${{ secrets.QIITA_TOKEN }}" \
                 -H "Content-Type: application/json" \
-                -d "{\"title\": \"$TITLE\", \"body\": \"$BODY\", \"tags\": [{\"name\": \"技術\"}], \"private\": false}"
+                -d "$JSON_PAYLOAD"
             fi
           done
