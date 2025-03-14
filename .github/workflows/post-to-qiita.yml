@@ -3,7 +3,7 @@ name: Publish Articles to Qiita
 on:
   push:
     paths:
-      - "Zenn*/publish/*.md"  # フォルダ構成に合わせる
+      - "Zenn*/publish/*.md"  # Obsidianのpublishフォルダ内の.mdファイルが対象
 
 jobs:
   publish_to_qiita:
@@ -17,7 +17,7 @@ jobs:
 
       - name: Qiitaに投稿（新規 or 更新）
         run: |
-          for file in "Zenn&Qiita/publish/"*.md; do
+          for file in "Zenn*/publish/"*.md; do
             if grep -q "publish: true" "$file"; then  # publish: true のものだけ投稿
               TITLE=$(grep "^title: " "$file" | cut -d'"' -f2) # titleを取得
               BODY=$(tail -n +5 "$file") # メタデータを除いた本文
@@ -34,9 +34,10 @@ jobs:
                   -d "$JSON_PAYLOAD")
                 
                 # 記事 ID を取得して Obsidian のファイルに保存
-                NEW_ID=$(echo $RESPONSE | jq -r '.id')
+                NEW_ID=$(echo "$RESPONSE" | jq -r '.id')
                 if [ "$NEW_ID" != "null" ]; then
                   echo "qiita_id: $NEW_ID" >> "$file"
+                  echo "記事ID $NEW_ID を保存しました"
                 fi
               else
                 # 記事 ID がある場合は更新
@@ -47,3 +48,11 @@ jobs:
               fi
             fi
           done
+
+      - name: GitHubに変更をプッシュ（記事IDを保存）
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add "Zenn&Qiita/publish/"*.md
+          git commit -m "記事IDを追加"
+          git push origin main || echo "No changes to commit"
