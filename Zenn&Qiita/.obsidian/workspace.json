@@ -34,9 +34,23 @@
               "icon": "lucide-file",
               "title": "test-post.md"
             }
+          },
+          {
+            "id": "a4b10e30185616d8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "conflict-files-obsidian-git.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "conflict-files-obsidian-git"
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       },
       {
         "id": "8457e107ec549fdd",
@@ -125,7 +139,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "publish/test-post.md.md",
+                "file": "conflict-files-obsidian-git.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -135,7 +149,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "test-post.mdへのバックリンク"
+              "title": "conflict-files-obsidian-gitへのバックリンク"
             }
           },
           {
@@ -144,12 +158,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "publish/test-post.md.md",
+                "file": "conflict-files-obsidian-git.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "test-post.mdからのアウトゴーイングリンク"
+              "title": "conflict-files-obsidian-gitからのアウトゴーイングリンク"
             }
           },
           {
@@ -173,13 +187,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "publish/test-post.md.md",
+                "file": "conflict-files-obsidian-git.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "test-post.mdのアウトライン"
+              "title": "conflict-files-obsidian-gitのアウトライン"
             }
           }
         ]
@@ -200,13 +214,13 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "be9ff7e264e37d9f",
+  "active": "a4b10e30185616d8",
   "lastOpenFiles": [
-    "無題のファイル.canvas",
     "publish/test-post.md.md",
+    "conflict-files-obsidian-git.md",
+    "無題のファイル.canvas",
     "publish/無題のフォルダ",
     "無題のファイル.md",
-    "conflict-files-obsidian-git.md",
     "Welcome.md",
     "publish"
   ]
