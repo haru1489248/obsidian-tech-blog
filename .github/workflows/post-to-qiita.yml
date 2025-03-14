@@ -4,9 +4,6 @@ on:
   push:
     paths:
       - "Zenn*/publish/*.md"  # Obsidianのpublishフォルダ内の.mdファイルが対象
-      
-permissions: 
-  contents: write  # これを追加することで GitHub Actions から push 可能に
 
 jobs:
   publish_to_qiita:
@@ -35,7 +32,7 @@ jobs:
                   -H "Authorization: Bearer ${{ secrets.QIITA_TOKEN }}" \
                   -H "Content-Type: application/json" \
                   -d "$JSON_PAYLOAD")
-                
+
                 # 記事 ID を取得して Obsidian のファイルに保存
                 NEW_ID=$(echo "$RESPONSE" | jq -r '.id')
                 if [ "$NEW_ID" != "null" ]; then
@@ -53,10 +50,14 @@ jobs:
             fi
           done
 
-      - name: GitHubに変更をプッシュ（記事IDを保存）
+      - name: GitHubに変更をプッシュ（記事IDを保存 & コンフリクト解消）
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
+          
+          # リモートの変更を先に取り込む（コンフリクト防止）
+          git pull --rebase origin main || echo "No remote changes to pull"
+
           git add Zenn*/publish/*.md
           git commit -m "記事IDを追加" || echo "No changes to commit"
-          git push origin main --force
+          git push origin main || echo "No changes to push"
