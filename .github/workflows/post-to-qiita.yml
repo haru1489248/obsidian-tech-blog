@@ -1,0 +1,24 @@
+name: Publish Articles to Qiita
+
+on:
+  push:
+    paths:
+      - "public/*.md" # Obsidianの「public」フォルダ内の.mdファイルが対象
+
+jobs:
+  publish_to_qiita:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Qiitaに投稿
+        run: |
+          for file in public/*.md; do
+            TITLE=$(head -n 1 "$file" | sed 's/^# //') # 1行目をタイトルに
+            BODY=$(cat "$file") # 全文を取得
+            curl -X POST "https://qiita.com/api/v2/items" \
+              -H "Authorization: Bearer ${{ secrets.QIITA_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d "{\"title\": \"$TITLE\", \"body\": \"$BODY\", \"tags\": [{\"name\": \"技術\"}], \"private\": false}"
+          done
